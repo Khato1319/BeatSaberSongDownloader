@@ -5,11 +5,11 @@ import web.pageElements.Period;
 import web.pageElements.SortOrder;
 
 public class SongParameters {
-    public Period period;
+    public String period = "all";
     private String username;
-    private boolean ranked;
-    private String genre;
-    private SortOrder sortOrder;
+    private boolean ranked = false;
+    private String genre = "all";
+    private String sortOrder = "top";
 
     private SongParameters() {
 
@@ -42,11 +42,11 @@ public class SongParameters {
 
     public static class Builder {
 
-        public Period period = Period.ALL_TIME;
+        public String period = "all";
         private String username;
         private boolean ranked = false;
         private String genre = "all";
-        private SortOrder sortOrder = SortOrder.TOP;
+        private String sortOrder = "top";
 
         public SongParameters.Builder setBookmark(String username) {
             if (!username.equals(""))
@@ -59,7 +59,7 @@ public class SongParameters {
             return this;
         }
 
-        public SongParameters.Builder setSortOrder(SortOrder sortOrder) {
+        public SongParameters.Builder setSortOrder(String sortOrder) {
             this.sortOrder = sortOrder;
             return this;
         }
@@ -69,7 +69,7 @@ public class SongParameters {
             return this;
         }
 
-        public SongParameters.Builder setPeriod(Period period) {
+        public SongParameters.Builder setPeriod(String period) {
             this.period = period;
             return this;
         }

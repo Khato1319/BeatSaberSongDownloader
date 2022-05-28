@@ -1,20 +1,9 @@
 package misc;
 
-import net.lingala.zip4j.core.ZipFile;
+import net.lingala.zip4j.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
-import org.apache.commons.io.FileUtils;
-import org.json.JSONObject;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.nio.charset.MalformedInputException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
 
 import static org.apache.commons.io.FilenameUtils.getExtension;
 import static org.apache.commons.io.FilenameUtils.removeExtension;

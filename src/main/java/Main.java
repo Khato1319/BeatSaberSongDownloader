@@ -1,58 +1,146 @@
-import org.json.JSONArray;
-import org.json.JSONObject;
+
 import song.SongLibrary;
-import web.pageElements.Period;
+import song.SongParameters;
+
 import web.WebManager;
-import web.pageElements.SortOrder;
+
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
+import java.util.Scanner;
+import java.util.Set;
+
 
 
 public class Main {
 
-    public static void main(String[] args) throws IOException {
+    public static void printSetValues(Set<String> set) {
+        int counter = 0;
+        for (String string : set) {
+            if (counter > 40) {
+                counter = 0;
+                System.out.println(string + ", ");
+            }
+            else {
+                System.out.print(string + ", ");
+                counter += string.length();
+            }
+        }
+    }
+    
+    public static int validateNumber(Scanner s) {
+        boolean validNumber = false;
+        int num = 0;
 
+        while(!validNumber) {
+            try {
+                num  = s.nextInt();
+                validNumber = true;
+            }
+            catch(RuntimeException e) {
+                System.out.println("Input needs to be a valid number");
+                s.nextLine();
+            }
+        }
+        s.nextLine();
+        
+        return num;
+    }
 
-        JSONArray o = new JSONArray(Files.readString(Paths.get("setting.json")));
+    public static void downloadGenreSongs(Scanner in, SongLibrary lib) throws IOException {
+        String genre;
+        String period;
+        int qty;
 
-        SongLibrary lib = new SongLibrary((String) o.get(0));
+        Set<String> genres = WebManager.getCategories();
 
-//        if (Paths.get((String) o.get(0)).toString().equals(SongLibrary.path()))
-//            lib.addSongsFromDirExceptRoot((String) o.get(0));
+        System.out.println("Available genres: ");
 
-        for (Object path : (JSONArray) o.get(1)) {
-            if (Paths.get((String) path).toString().equals(SongLibrary.path()))
-            lib.addSongsFromDirExceptRoot((String) path);
+        printSetValues(genres);
+
+        System.out.println();
+
+        System.out.print("Enter the desired genre: ");
+
+        genre = in.nextLine();
+
+        while (!genres.contains(genre)) {
+            System.out.println("Genre not valid. Please enter a valid genre.");
+            genre = in.nextLine();
         }
 
-        Iterator<Object> it = o.iterator();
-        it.next();
-        it.next();
+        System.out.println("----------------------------------------------------------");
+
+        System.out.print("Enter how many songs you wish to download (<= 0 means all of them): ");
+
+        qty = validateNumber(in);
+
+        System.out.println("------------------------------------------------------");
+
+        Set<String> periods = WebManager.getPeriods();
+
+        System.out.println("Available periods: ");
+
+        printSetValues(periods);
+
+        System.out.println();
+
+        System.out.print("Enter the desired period: ");
+
+        period = in.nextLine();
+
+        while (!periods.contains(period)) {
+            System.out.println("Period not valid. Please enter a valid period.");
+            period = in.nextLine();
+        }
+
+        System.out.println("----------------------------------------------------------");
 
         WebManager b = new WebManager();
 
-        JSONObject categories = new JSONObject(Files.readString(Paths.get("cat.json")));
+        SongParameters parameters = new SongParameters.Builder().setGenre(genre).setPeriod(period).setSortOrder("top").build();
 
-        JSONObject genres = categories.getJSONObject("genre");
-
-
-        while (it.hasNext()) {
-            JSONObject obj = (JSONObject) it.next();
-            b.fetchSongs(genres.getString(String.valueOf(obj.getInt("genre"))),Period.num(obj.getInt("period")),
-                    SortOrder.num(obj.getInt("sort_order")),obj.getBoolean("ranked"),obj.getString("username"),obj.getInt("max"));
-        }
-
+        b.fetchSongs(parameters,qty);
 
         b.downloadAndAddToLibrary(lib);
 
-        lib.createFiles();
+    }
 
+    public static void downloadBookmarkedSongs(Scanner in, SongLibrary lib) throws IOException {
+        int qty;
+        String username;
+
+        System.out.print("Enter your username: ");
+
+        username = in.nextLine();
+
+        System.out.print("Enter how many songs you wish to download (<= 0 means all of them): ");
+
+        qty = validateNumber(in);
+
+        System.out.println("------------------------------------------------------");
+
+        WebManager b = new WebManager();
+
+        SongParameters parameters = new SongParameters.Builder().setBookmark(username).setSortOrder("new").build();
+
+        b.fetchSongs(parameters,qty);
+
+        b.downloadAndAddToLibrary(lib);
+    }
+
+    public static void main(String[] args) throws IOException {
+        SongLibrary lib = new SongLibrary();
+        Scanner in = new Scanner(System.in);
+
+        System.out.print("Enter 1 to download bookmarked songs or 2 to download songs by genre: ");
+        int option = validateNumber(in);
+
+        if (option == 2) {
+            downloadGenreSongs(in, lib);
+        }
+        else {
+            downloadBookmarkedSongs(in, lib);
+        }
 
     }
 

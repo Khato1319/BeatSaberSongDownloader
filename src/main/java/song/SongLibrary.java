@@ -12,8 +12,8 @@ public class SongLibrary {
     private Set<SongFile> songs = new HashSet<>();
     private static String path;
 
-    public SongLibrary(String path) {
-        SongLibrary.path = Paths.get(path).toString();
+    public SongLibrary() {
+        SongLibrary.path = "./songs";
         addSongsFromDir(path);
     }
 
@@ -34,8 +34,6 @@ public class SongLibrary {
         File[] existingFiles = fileDir.listFiles();
         if (existingFiles != null)
             for (File file : existingFiles) {
-
-
                 try {
                     SongFile toAdd = new SongFile(file);
 
@@ -63,19 +61,9 @@ public class SongLibrary {
 
     }
 
-    // no queremos que desde afuera puedan agregar nuevamente las canciones del directorio de destino
-    public void addSongsFromDirExceptRoot(String dir){
-        if (Paths.get(dir).equals(Paths.get(path)))
-            return;
-
-        addSongsFromDir(dir);
-
-    }
-
-
-    public void createFiles() throws IOException {
-        for (SongFile song : songs) {
-            song.createFile();
-        }
-    }
+//    public void createFiles() throws IOException {
+//        for (SongFile song : songs) {
+//            song.createFile();
+//        }
+//    }
 }

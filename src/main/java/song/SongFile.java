@@ -18,7 +18,7 @@ public class SongFile{
         return targetDir;
     }
 
-    private static String targetDir = SongLibrary.path();
+    private static String targetDir = "./songs";
     private static final Set<String> infoKeyValues = new HashSet<>(Arrays.asList("info","Info", "isInfo"));
     private File file;
     private File infoFile;
@@ -70,24 +70,24 @@ public class SongFile{
 
     }
 
-    public void createFile() throws IOException {
-
-        File possibleTargetFile = new File(targetDir + "\\" + Utils.getUnusedFileName(file,title,targetDir));
-
-        if (file.getParent().equals(targetDir) && !file.getName().equals(Utils.stripName(title)) && !file.getName().equals(possibleTargetFile.getName())) {
-            // si el archivo se encuentra en el mismo directorio y tiene un nombre incorrecto
-            System.out.println("Renaming " + file.getAbsolutePath() + " to " + possibleTargetFile.getAbsolutePath());
-            file.renameTo(possibleTargetFile);
-        }
-
-        else if (!file.getParent().equals(targetDir)){
-            System.out.println("Copying " + file.getAbsolutePath() + " to " + possibleTargetFile.getAbsolutePath());
-            FileUtils.copyDirectory(file, possibleTargetFile);
-        }
-
-        // el archivo ya se encuentra en el directorio y tiene el nombre correcto. No hago nada.
-
-    }
+//    public void createFile() throws IOException {
+//
+//        File possibleTargetFile = new File(targetDir + "\\" + Utils.getUnusedFileName(file,title,targetDir));
+//
+//        if (file.getParent().equals(targetDir) && !file.getName().equals(Utils.stripName(title)) && !file.getName().equals(possibleTargetFile.getName())) {
+//            // si el archivo se encuentra en el mismo directorio y tiene un nombre incorrecto
+//            System.out.println("Renaming " + file.getAbsolutePath() + " to " + possibleTargetFile.getAbsolutePath());
+//            file.renameTo(possibleTargetFile);
+//        }
+//
+//        else if (!file.getParent().equals(targetDir)){
+//            System.out.println("Copying " + file.getAbsolutePath() + " to " + possibleTargetFile.getAbsolutePath());
+//            FileUtils.copyDirectory(file, possibleTargetFile);
+//        }
+//
+//        // el archivo ya se encuentra en el directorio y tiene el nombre correcto. No hago nada.
+//
+//    }
 
     public boolean equals(Object o) {
 
